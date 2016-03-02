@@ -210,3 +210,6 @@ startFeed raw_clients clients region = do
         case info of
             ServerInfo url port token ->
                 WS.runClient (T.unpack url) port "/" $ client token raw_clients clients
+
+startFeedCustomServer raw_clients clients url port token =
+        WS.runClient url port "/" $ client token raw_clients clients

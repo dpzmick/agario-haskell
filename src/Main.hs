@@ -17,7 +17,9 @@ rawLogger raw_chan = do
 messageLogger chan = do
         forever $ do
             m <- readChan chan
-            print m
+            case m of
+                AF.FFALeaderboard _ -> print m
+                _ -> return ()
 
 main :: IO ()
 main = do
@@ -27,4 +29,5 @@ main = do
         _ <- forkIO $ rawLogger raw_chan
         _ <- forkIO $ messageLogger chan
 
-        AF.startFeed [raw_chan] [chan] "US-Atlanta"
+        -- AF.startFeed [raw_chan] [chan] "US-Atlanta"
+        AF.startFeedCustomServer [raw_chan] [chan] "185.38.150.87" 443 "asd"

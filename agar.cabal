@@ -27,5 +27,5 @@ executable agar
                        data-binary-ieee754 >= 0.4.4,
                        websockets >= 0.9.6.1
   hs-source-dirs:      src
-  ghc-options:         -Wall
+  ghc-options:         -Wall -O2 -rtsopts
   default-language:    Haskell2010
