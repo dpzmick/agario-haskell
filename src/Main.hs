@@ -1,29 +1,30 @@
 {-# LANGUAGE DeriveGeneric, OverloadedStrings #-}
 
 import Control.Concurrent (forkIO)
-import Control.Concurrent.Chan (writeChan, readChan, newChan)
+import Control.Concurrent.Chan
 import Control.Monad (forever)
 import System.IO
 
-import qualified Data.ByteString as BS
+import qualified Data.ByteString.Char8 as BS8
 import qualified AgarFeed as AF
 
 rawLogger raw_chan = do
         log <- openBinaryFile "output" WriteMode
         forever $ do
             dat <- readChan raw_chan
-            BS.hPutStrLn log dat
+            BS8.hPutStrLn log dat
 
 messageLogger chan = do
         forever $ do
             m <- readChan chan
             print m
 
+main :: IO ()
 main = do
         raw_chan <- newChan
         chan     <- newChan
 
-        forkIO $ rawLogger raw_chan
-        forkIO $ messageLogger chan
+        _ <- forkIO $ rawLogger raw_chan
+        _ <- forkIO $ messageLogger chan
 
         AF.startFeed [raw_chan] [chan] "US-Atlanta"
