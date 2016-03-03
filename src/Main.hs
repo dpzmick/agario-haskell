@@ -7,6 +7,7 @@ import Control.Concurrent.Chan
 import qualified Clients.RawLogger     as RawLog
 import qualified Clients.MessageLogger as MessLog
 import qualified Clients.CircleBot     as CircleBot
+import qualified Clients.EatBot        as Eater
 
 import AgarFeed
 
@@ -35,9 +36,12 @@ main = do
         loggerChan <- newChan
         _ <- forkIO $ MessLog.client loggerChan
 
+        messages <- newChan
         -- create a client that steers us in circles
-        circleChan <- newChan
-        _ <- forkIO $ CircleBot.client circleChan commands
+        -- _ <- forkIO $ CircleBot.client messages commands
+
+        -- make an eater
+        _ <- forkIO $ Eater.client messages commands
 
         -- TODO to connect to the real agar severs, need to use ServerInfo
 
@@ -46,7 +50,7 @@ main = do
 
         -- start the feed
         let fc = FeedConfig { rawClients     = [raw_chan]
-                            , messageClients = [loggerChan, circleChan]
+                            , messageClients = [loggerChan, messages]
                             , commandChan    = commands
                             , url            = "127.0.0.1"
                             , port           = 8889 }

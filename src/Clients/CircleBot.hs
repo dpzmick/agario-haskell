@@ -40,8 +40,8 @@ startBot o (AF.Point (xmin, ymin)) (AF.Point (xmax, ymax)) = do
         -- messages to move in a circle
         let
           loop (x, y) degrees = do
-            print (x, y)                      -- do some logging
-            writeChan o (AF.SetDirection x y) -- start going this direction
+            print (x, y)                                   -- do some logging
+            writeChan o (AF.SetDirection (AF.Point (x,y))) -- start going this direction
 
             -- sleep for a bit to avoid destroying the server
             threadDelay 100000

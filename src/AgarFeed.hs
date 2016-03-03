@@ -27,15 +27,17 @@ import qualified Network.WebSockets as WS
 
 data LeaderboardEntry = LeaderboardEntry !Word32 !String deriving(Show)
 
-data Point a = Point !(a, a) deriving(Show)
+data Point a = Point !(a, a) deriving(Show, Eq)
 
-data Eat = Eat { eater_id :: Word32, victim_id :: Word32 } deriving(Show)
+data Eat = Eat { eater_id :: BlobID, victim_id :: BlobID } deriving(Show)
 
 data Color = Color Word8 Word8 Word8 deriving(Show)
 
 data Removal = Removal deriving(Show)
 
-data Update = Update { player_id :: Word32
+type BlobID = Word32
+
+data Update = Update { player_id :: BlobID
                      , loc       :: Point Word32
                      , radius    :: Word16
                      , color     :: Color
@@ -47,7 +49,7 @@ data IncomingMessage =
           ViewUpdate !(Point Float) !Float
         | ResetAll
         | Reset
-        | OwnsBlob !Word32
+        | OwnsBlob !BlobID
         | FFALeaderboard ![LeaderboardEntry]
         -- TODO something is wrong with GameAreaSize on a real server
         | GameAreaSize (Point Double) (Point Double)
@@ -62,10 +64,13 @@ data OutgoingMessage =
         | NickAndSpawn !String
         | Spectate
         -- actions TODO fill in the rest
-        | SetDirection !Word32 !Word32
+        | SetDirection !(Point Word32)
         | Split
         | EjectMass
         deriving(Show)
+
+type IQueue = Chan IncomingMessage
+type OQueue = Chan OutgoingMessage
 
 ----------------------------------------------------------------------------
 -- here be dragons
@@ -182,7 +187,7 @@ instance Binary OutgoingMessage where
             putWord8 0
             putStr16End pname
 
-        put (SetDirection x y) = do
+        put (SetDirection (Point (x,y))) = do
             putWord8 16
             putWord32le x
             putWord32le y
