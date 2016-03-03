@@ -32,9 +32,9 @@ to clients using `Control.Concurrent.Chan` synchronized queues. It is assumed
 that each client will be running in it's own thread, consuming the messages as
 they come in on their respective queue.
 
-Output to the server is also provided via a queue. The feed reads from its
-`command queue` and sends any messages (expressed in haskell types) received via
-the command queue to the server.
+Output to the agar.io server is also provided via a queue. The feed reads from
+its `command queue` and sends any messages (expressed in haskell types) received
+via the command queue to the server.
 
 This means that one feed connection can only run one bot which actually
 interacts with the game, but it can host multiple loggers or analysis clients
