@@ -5,12 +5,13 @@ import Control.Concurrent.Chan
 
 import AgarFeed
 
+import System.IO
+
 -- a client which reads from a message channel and logs sometimes
 client :: Chan IncomingMessage -> IO ()
 client chan = do
+        handle <- openFile "output-messages" WriteMode
         forever $ do
             m <- readChan chan
-            case m of
-                FFALeaderboard _ -> print m
-                _ -> return ()
+            hPutStrLn handle (show m)
 

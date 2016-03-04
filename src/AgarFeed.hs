@@ -31,7 +31,7 @@ data Point a = Point !(a, a) deriving(Show, Eq)
 
 data Eat = Eat { eater_id :: BlobID, victim_id :: BlobID } deriving(Show)
 
-data Color = Color Word8 Word8 Word8 deriving(Show)
+data Color = Color Word8 Word8 Word8 deriving(Show, Eq)
 
 data Removal = Removal deriving(Show)
 
@@ -43,7 +43,7 @@ data Update = Update { player_id :: BlobID
                      , color     :: Color
                      , name      :: String
                      , virus     :: Bool
-                     } deriving(Show)
+                     } deriving(Show, Eq)
 
 data IncomingMessage =
           ViewUpdate !(Point Float) !Float
